@@ -1,0 +1,25 @@
+{
+  "name": "digital-marketplace-api",
+  "version": "1.0.0",
+  "description": "Backend Api for PSC Digital Marketplace",
+  "main": "index.js",
+  "scripts": {
+    "up": "mkdir -p data && docker-compose up",
+    "preup:prod": "npm run build --prefix api",
+    "up:prod": "mkdir -p data && docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d ",
+    "stop": "docker-compose stop",
+    "down": "docker-compose down",
+    "test": "npm run test --prefix api"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PSC-Digital-Marketplace/digital-marketplace-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PSC-Digital-Marketplace/digital-marketplace-api/issues"
+  },
+  "homepage": "https://github.com/PSC-Digital-Marketplace/digital-marketplace-api#readme"
+}

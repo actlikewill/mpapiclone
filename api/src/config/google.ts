@@ -1,0 +1,18 @@
+const {
+    GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET,
+    GOOGLE_REFRESH_TOKEN,
+    GOOGLE_REDIRECT_URI ,
+    GOOGLE_USER 
+  } = process.env
+
+  export {
+      GOOGLE_CLIENT_ID,
+      GOOGLE_CLIENT_SECRET,
+      GOOGLE_REFRESH_TOKEN,
+      GOOGLE_REDIRECT_URI,
+      GOOGLE_USER
+  }
+
+
+  

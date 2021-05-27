@@ -1,0 +1,35 @@
+version: '3'
+
+services: 
+  api:
+    container_name: marketplace_api
+    restart: always
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+      target: base
+    ports:
+      - 3000:3000
+    links:
+      - db
+    volumes:
+      - ./api:/app
+    env_file:
+      - .env 
+    command: npm run dev
+      
+  db: 
+    container_name: marketplace_db
+    user: $UID
+    image: mongo
+    ports: 
+      - '27017:27017'
+    environment: 
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: secret
+      MONGO_INITDB_DATABASE: marketplace
+      MONGO_USERNAME: admin
+      MONGO_PASSWORD: secret
+    volumes: 
+      - ./data:/data/db
+      - ./mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh:ro
