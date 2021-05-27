@@ -1,10 +1,10 @@
 import express from "express";
 import BaseController  from "../BaseController/BaseController";
-import { validate, loginSchema, registerSchema } from '../../validation'
+import { validate, loginSchema, registerSchema, forgotPasswordSchema, passwordResetSchema } from '../../validation'
 import { User } from '../../models'
 import { BadRequestError } from '../../errors'
 import jwt from 'jsonwebtoken'
-import { JWT_KEY, EMAIL_VERIFICATION_REDIRECT } from '../../config'
+import { JWT_KEY, EMAIL_VERIFICATION_REDIRECT, FRONTEND_URL } from '../../config'
 import { UserDocument } from '../../models'
 import { Mailer } from "../../mailer";
 
@@ -144,6 +144,72 @@ class UserControllerClass extends BaseController {
         } catch (e) {
 
             throw new BadRequestError ( e.message )
+        }
+    }
+
+    public async sendPasswordResetEmail (frontendUrl: string, user: any, token: string) {
+        try {
+          const resetLink = `${frontendUrl}/reset-password/${token}`
+
+          await Mailer.sendEmailWithTemplate<{name: string, link: string}> ({
+            template: "password_reset",
+            message: {
+               to: [user.email],
+               from: 'TelkomHuduma@digitalHuduma.co.ke'
+            },
+           locals: {
+               name: user.name,
+               link: resetLink
+           }
+         })
+        } catch (e) {
+           throw new Error ( e )
+       }
+   }
+
+    public async forgotPassword (req: express.Request, res: express.Response) {
+        await validate (forgotPasswordSchema, req.body)
+
+        const { email } = req.body
+        const user = await User.findOne ({ email })
+        if (!user) {
+            throw new BadRequestError(`Sorry, there is no account associated with ${email}`)
+        }
+
+        const token = jwt.sign({ email: user.email }, JWT_KEY, { expiresIn: '24h' })
+        await UserController.sendPasswordResetEmail(FRONTEND_URL, user, token)
+        return res.status(200).json({ message: 'Your account password reset has been initiated. Kindly check your email to reset your password.', token })
+    }
+
+    public async passwordReset (req: express.Request, res: express.Response) {
+      try {
+        await validate (passwordResetSchema, req.body)
+
+        const { token } = req.query;
+        const { password } = req.body
+
+        if (!token) {
+            throw new BadRequestError('Invalid token. Kindly  re-initiate password reset.')
+        }
+
+        const { email } = jwt.verify(token!.toString(), JWT_KEY) as UserPayload
+        const user = await User.findOneAndUpdate({ email }, { password }, { useFindAndModify: false })
+
+        if (!user) {
+            throw new BadRequestError(`Sorry, there is no account associated with ${email}`)
+        }
+
+        return res.status(201).json({
+            message: `You've successfully reset your account's password. Log in with your new password.`,
+            user
+        })
+      } catch (error) {
+          if (
+            error.name === 'TokenExpiredError'
+            || error.name === 'JsonWebTokenError'
+          ) {
+              throw new BadRequestError('Sorry! Link has expired. Kindly re-initiate password reset.')
+          }
         }
     }
 }

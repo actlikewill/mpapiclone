@@ -1,11 +1,6 @@
 export {}
 const testClient = global.testClient
-const { 
-    addCompanyUserRoute, 
-    updateCompanyUserRoute, 
-    loginRoute, 
-    deleteCompanyUserRoute,
-    getOneCompanyRoute } = global.routes
+const { addCompanyUserRoute, updateCompanyUserRoute, loginRoute, deleteCompanyUserRoute } = global.routes
 
 
 
@@ -194,26 +189,5 @@ describe('Company Admin Controller', () => {
             })
     
         expect(deletedUser.body.user.role).toBe("Unassigned")
-    })
-
-    it ('gets one company', async () => {
-
-        const { token , body : { company } } = await global.addCompany( global.testUser, global.testCompany )
-
-        await testClient
-            .get(`${getOneCompanyRoute}?id=`)
-            .set('Authorization', token )
-            .expect(400)
-
-        await testClient
-            .get(`${getOneCompanyRoute}?id=invalidid`)
-            .set('Authorization', token )
-            .expect(400)
-
-        await testClient
-            .get(`${getOneCompanyRoute}?id=${company.id}`)
-            .set('Authorization', token )
-            .expect(200)
-        
     })
 })

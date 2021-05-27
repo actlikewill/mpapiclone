@@ -1,11 +1,8 @@
-import { isValidObjectId } from 'mongoose'
-
 import BaseController from "../BaseController/BaseController"
 import { Company, User, UserDocument } from '../../models'
 import { validate, companySchema,updateCompanySchema } from '../../validation'
 import express from 'express'
 import { ForbiddenError } from "../../errors/forbidden-error"
-import { BadRequestError } from "../../errors"
 
 interface UserPayload {
     id: string
@@ -94,30 +91,10 @@ class CompanyControllerClass extends BaseController {
     }
 
     public async getCompany ( req: express.Request, res: express.Response ) {
-        try {
 
-            const { id } = req.query
+        const company = await Company.findById(req.body.id).populate('users')
 
-            if ( ! id || ! isValidObjectId ( id ) ) {
-                throw new Error ('Invalid company id')
-            }
-
-            const company = await Company.findById ( id )
-
-            if ( ! company ) {
-                throw new Error ('Company not found')
-            }
-
-            return res.status(200).json ( { company } )
-
-        }
-         
-        catch ( error ) {
-
-            throw new BadRequestError ( error.message )
-
-        }
-
+        return res.status(200).json({company})
 
     }
 

@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --testTimeout=15000",
     "test:watch": "jest --watchAll --no-cache --detectOpenHandles",
     "prebuild": "rm -rf dist",
     "build": "tsc",
     "dev": "ts-node-dev src",
-    "start": "NODE_PATH=./dist node dist/index.js "
+    "start": "NODE_PATH=./dist node dist/index.js ",
+    "seed": "ts-node src/seeders/index.ts"
   },
   "jest": {
     "preset": "ts-jest",
@@ -44,6 +45,7 @@
     "express-async-errors": "^3.1.1",
     "googleapis": "^73.0.0",
     "jsonwebtoken": "^8.5.1",
+    "mongo-seeding": "^3.6.0",
     "mongoose": "^5.12.3",
     "nodemailer": "^6.6.0",
     "pug": "^3.0.2",

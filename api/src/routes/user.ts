@@ -14,6 +14,10 @@ UserRouter.get('/verify-email', UserController.verifyEmail )
 
 UserRouter.get('/current-user', isLoggedIn, UserController.currentUser )
 
+UserRouter.post('/password/forgot', UserController.forgotPassword);
+
+UserRouter.post('/password/reset', UserController.passwordReset);
+
 const UserBaseRouter = Router().use ( '/user', UserRouter )
 
 export default UserBaseRouter

@@ -9,7 +9,7 @@ declare global {
     namespace NodeJS {
         interface Global {
             signin( testUser: any ): Promise<{user: object, token: string}>
-            addCompany( testUser: any, testCompany: any ): Promise<{ token: string, body: any}>
+            addCompany( testUser: any, testCompany: any ): Promise<{ token: string, body: object}>
             routes: any
             testClient: any
             testUser: any
@@ -19,6 +19,7 @@ declare global {
 }
 
 let mongo : any
+const testDB = 'mongodb://admin:secret@localhost:27017'
 
 beforeAll( async () => {
     process.env.JWT_KEY = 'secretkey'
@@ -26,7 +27,7 @@ beforeAll( async () => {
     mongo = new MongoMemoryServer()
     const mongoUri = await mongo.getUri()
 
-    await mongoose.connect( mongoUri, {
+    await mongoose.connect(mongoUri, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     })
@@ -50,13 +51,14 @@ global.routes = {
     loginRoute: '/api/user/login',
     logoutRoute: '/api/user/logout',
     registerRoute: '/api/user/register',
+    forgotPasswordRoute: '/api/user/password/forgot',
+    passwordResetRoute: '/api/user/password/reset',
     addCompanyRoute: '/api/company/create',
     deleteCompanyRoute: '/api/company/delete', // TODO: delete company
     updateCompanyRoute: '/api/company/update',
     addCompanyUserRoute: '/api/company/user/add', // TODO: add company users
     updateCompanyUserRoute: '/api/company/user/update', // TODO: edit company users
     deleteCompanyUserRoute: '/api/company/user/delete', // TODO: remove company users
-    getOneCompanyRoute: '/api/company', 
 }
 
 global.testUser = {

@@ -8,9 +8,9 @@ CompanyRouter.post ('/create', isLoggedIn, CompanyController.addCompany )
 
 CompanyRouter.post('/update', isLoggedIn, CompanyController.updateCompany)
 
-CompanyRouter.get ('/all', isLoggedIn, CompanyController.getCompanies )
+CompanyRouter.get ('/', isLoggedIn, CompanyController.getCompanies )
 
-CompanyRouter.get ('/', isLoggedIn, CompanyController.getCompany )
+CompanyRouter.get ('/id', isLoggedIn, CompanyController.getCompany )
 
 CompanyRouter.post ('/delete', isLoggedIn, CompanyController.deleteCompany )
 
